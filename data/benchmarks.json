@@ -1,0 +1,16 @@
+{
+  "lastUpdated": "2026-03-27T18:00:00Z",
+  "benchmarks": ["MMLU", "HumanEval", "SWE-Bench", "ARC AGI 2", "ARC AGI 3", "GPQA", "MATH", "IFEval"],
+  "models": [
+    {"name": "GPT-4.5", "provider": "OpenAI", "scores": {"MMLU": 92.3, "HumanEval": 93.1, "SWE-Bench": 54.2, "ARC AGI 2": 72.1, "ARC AGI 3": 48.3, "GPQA": 68.5, "MATH": 85.2, "IFEval": 91.0}},
+    {"name": "GPT-4o", "provider": "OpenAI", "scores": {"MMLU": 88.7, "HumanEval": 90.2, "SWE-Bench": 48.1, "ARC AGI 2": 65.3, "ARC AGI 3": 38.7, "GPQA": 62.1, "MATH": 76.4, "IFEval": 88.5}},
+    {"name": "Claude Opus 4", "provider": "Anthropic", "scores": {"MMLU": 91.8, "HumanEval": 94.5, "SWE-Bench": 62.3, "ARC AGI 2": 78.4, "ARC AGI 3": 55.1, "GPQA": 71.2, "MATH": 88.1, "IFEval": 93.2}},
+    {"name": "Claude Sonnet 4", "provider": "Anthropic", "scores": {"MMLU": 89.5, "HumanEval": 91.8, "SWE-Bench": 55.7, "ARC AGI 2": 70.2, "ARC AGI 3": 45.6, "GPQA": 65.8, "MATH": 82.3, "IFEval": 90.1}},
+    {"name": "Gemini 3 Ultra", "provider": "Google", "scores": {"MMLU": 93.1, "HumanEval": 92.8, "SWE-Bench": 58.9, "ARC AGI 2": 75.6, "ARC AGI 3": 52.4, "GPQA": 73.1, "MATH": 90.5, "IFEval": 92.8}},
+    {"name": "Gemini 3 Pro", "provider": "Google", "scores": {"MMLU": 87.2, "HumanEval": 88.4, "SWE-Bench": 45.3, "ARC AGI 2": 62.1, "ARC AGI 3": 35.8, "GPQA": 58.9, "MATH": 74.6, "IFEval": 86.3}},
+    {"name": "Grok 3", "provider": "xAI", "scores": {"MMLU": 90.5, "HumanEval": 91.2, "SWE-Bench": 51.8, "ARC AGI 2": 69.7, "ARC AGI 3": 44.2, "GPQA": 66.3, "MATH": 83.7, "IFEval": 89.4}},
+    {"name": "Llama 4 405B", "provider": "Meta", "scores": {"MMLU": 88.9, "HumanEval": 89.7, "SWE-Bench": 47.5, "ARC AGI 2": 64.8, "ARC AGI 3": 37.9, "GPQA": 60.4, "MATH": 78.1, "IFEval": 87.2}},
+    {"name": "DeepSeek V4", "provider": "DeepSeek", "scores": {"MMLU": 90.1, "HumanEval": 92.3, "SWE-Bench": 56.4, "ARC AGI 2": 71.5, "ARC AGI 3": 46.8, "GPQA": 67.9, "MATH": 86.3, "IFEval": 88.9}},
+    {"name": "Mistral Large 3", "provider": "Mistral", "scores": {"MMLU": 86.4, "HumanEval": 87.1, "SWE-Bench": 42.8, "ARC AGI 2": 58.3, "ARC AGI 3": 32.1, "GPQA": 55.7, "MATH": 71.9, "IFEval": 84.6}}
+  ]
+}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Benchmark Tracker — Live Model Leaderboard</title>
+<meta name="description" content="Live AI model benchmark leaderboard tracking GPT-4.5, Claude Opus, Gemini 3 and more across MMLU, HumanEval, SWE-Bench, ARC AGI.">
+<meta property="og:title" content="AI Benchmark Tracker">
+<meta property="og:description" content="Live leaderboard for AI model benchmarks.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--surface:#12121a;--border:#1e1e2e;--text:#e0e0e0;--muted:#888;--accent:#6366f1;--accent2:#818cf8;--green:#22c55e;--red:#ef4444}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.container{max-width:1400px;margin:0 auto;padding:20px}
+header{text-align:center;padding:40px 0 30px}
+header h1{font-size:2rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+header p{color:var(--muted);margin-top:8px}
+.controls{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.controls select,.controls input{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:8px;font-size:.9rem}
+.controls input{flex:1;min-width:200px}
+.table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;min-width:900px}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+th{background:var(--surface);color:var(--muted);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;user-select:none}
+th:hover{color:var(--accent2)}
+th.sorted-asc::after{content:' ▲';color:var(--accent)}
+th.sorted-desc::after{content:' ▼';color:var(--accent)}
+tr:hover{background:rgba(99,102,241,.05)}
+td.model{font-weight:600;color:#fff}
+td.provider{color:var(--accent2)}
+.score{font-variant-numeric:tabular-nums}
+.score.top{color:var(--green);font-weight:700}
+.updated{text-align:center;padding:20px;color:var(--muted);font-size:.85rem}
+@media(max-width:768px){header h1{font-size:1.4rem}.container{padding:10px}}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>📊 AI Benchmark Tracker</h1>
+<p>Live model performance across major benchmarks</p>
+</header>
+<div class="controls">
+<select id="providerFilter"><option value="">All Providers</option></select>
+<input type="text" id="search" placeholder="Search models...">
+</div>
+<div class="table-wrap"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+<div class="updated" id="updated"></div>
+</div>
+<script>
+let data,sortCol='MMLU',sortDir=-1;
+async function init(){
+const r=await fetch('data/benchmarks.json');data=await r.json();
+const providers=[...new Set(data.models.map(m=>m.provider))];
+const sel=document.getElementById('providerFilter');
+providers.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;sel.appendChild(o)});
+sel.onchange=render;document.getElementById('search').oninput=render;
+document.getElementById('updated').textContent='Last updated: '+new Date(data.lastUpdated).toLocaleString();
+render();
+}
+function render(){
+const filter=document.getElementById('providerFilter').value;
+const search=document.getElementById('search').value.toLowerCase();
+let models=data.models.filter(m=>(!filter||m.provider===filter)&&(!search||m.name.toLowerCase().includes(search)||m.provider.toLowerCase().includes(search)));
+models.sort((a,b)=>{
+const av=a.scores[sortCol]??-1,bv=b.scores[sortCol]??-1;
+return sortDir*(bv-av);
+});
+// find top scores per benchmark
+const tops={};data.benchmarks.forEach(b=>{tops[b]=Math.max(...data.models.map(m=>m.scores[b]??0))});
+const thead=document.getElementById('thead');
+thead.innerHTML='<tr><th data-col="name">Model</th><th data-col="provider">Provider</th>'+data.benchmarks.map(b=>`<th data-col="${b}" class="${sortCol===b?(sortDir===-1?'sorted-desc':'sorted-asc'):''}">${b}</th>`).join('')+'</tr>';
+thead.querySelectorAll('th').forEach(th=>{
+th.onclick=()=>{const c=th.dataset.col;if(c==='name'||c==='provider')return;if(sortCol===c)sortDir*=-1;else{sortCol=c;sortDir=-1}render()};
+});
+const tbody=document.getElementById('tbody');
+tbody.innerHTML=models.map(m=>'<tr><td class="model">'+m.name+'</td><td class="provider">'+m.provider+'</td>'+data.benchmarks.map(b=>{const s=m.scores[b];const isTop=s===tops[b];return`<td class="score${isTop?' top':''}">${s!=null?s.toFixed(1):'—'}</td>`}).join('')+'</tr>').join('');
+}
+init();
+</script>
+</body>
+</html>
